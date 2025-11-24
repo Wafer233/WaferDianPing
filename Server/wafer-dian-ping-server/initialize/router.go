@@ -10,12 +10,15 @@ func NewRouter(
 	user *http.UserHandler,
 	blog *http.BlogHandler,
 	auth gin.HandlerFunc,
+	shops *http.ShopHandler,
 ) *gin.Engine {
 
 	r := gin.Default()
-	r = http.NewShopTypeRouter(r, shty)
+
 	r = http.NewUserRouter(r, user, auth)
 	r = http.NewBlogRouter(r, blog, auth)
+	r = http.NewShopRouter(r, shops, auth)
+	r = http.NewShopTypeRouter(r, shty)
 	return r
 
 }

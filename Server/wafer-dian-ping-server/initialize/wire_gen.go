@@ -39,6 +39,10 @@ func Init() (*gin.Engine, error) {
 	blogService := application.NewBlogService(blogRepository, userService)
 	blogHandler := http.NewBlogHandler(blogService)
 	handlerFunc := middleware.AuthMiddleware(sessionService)
-	engine := NewRouter(shopTypeHandler, userHandler, blogHandler, handlerFunc)
+	defaultShopRepository := persistence.NewDefaultShopRepository(db)
+	shopRepository := persistence.NewCachedShopRepository(defaultShopRepository, client)
+	shopService := application.NewShopService(shopRepository)
+	shopHandler := http.NewShopHandler(shopService)
+	engine := NewRouter(shopTypeHandler, userHandler, blogHandler, handlerFunc, shopHandler)
 	return engine, nil
 }

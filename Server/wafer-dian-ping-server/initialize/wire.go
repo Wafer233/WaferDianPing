@@ -20,6 +20,7 @@ func Init() (*gin.Engine, error) {
 		http.NewShopTypeHandler,
 		http.NewUserHandler,
 		http.NewBlogHandler,
+		http.NewShopHandler,
 
 		middleware.AuthMiddleware,
 
@@ -27,10 +28,13 @@ func Init() (*gin.Engine, error) {
 		application.NewUserService,
 		application.NewSessionService,
 		application.NewBlogService,
+		application.NewShopService,
 
 		persistence.NewDefaultShopTypeRepository,
 		persistence.NewDefaultUserRepository,
 		persistence.NewDefaultBlogRepository,
+		persistence.NewDefaultShopRepository,
+		persistence.NewCachedShopRepository,
 
 		cache.NewSessionRepository,
 

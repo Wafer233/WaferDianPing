@@ -33,6 +33,16 @@ func NewBlogRouter(r *gin.Engine, h *BlogHandler, auth gin.HandlerFunc) *gin.Eng
 
 }
 
+func NewShopRouter(r *gin.Engine, h *ShopHandler, auth gin.HandlerFunc) *gin.Engine {
+
+	shop := r.Group("/shop/")
+	shop.Use(auth)
+	shop.GET(":id", h.QueryShopById)
+	shop.GET("of/type", h.QueryShopByType)
+	return r
+
+}
+
 func NewShopTypeRouter(r *gin.Engine, h *ShopTypeHandler) *gin.Engine {
 
 	shopType := r.Group("/shop-type/")
