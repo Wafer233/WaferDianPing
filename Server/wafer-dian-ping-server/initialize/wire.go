@@ -29,6 +29,7 @@ func Init() (*gin.Engine, error) {
 		application.NewSessionService,
 		application.NewBlogService,
 		application.NewShopService,
+		application.NewLikeService,
 
 		persistence.NewDefaultShopTypeRepository,
 		persistence.NewDefaultUserRepository,
@@ -37,6 +38,7 @@ func Init() (*gin.Engine, error) {
 		persistence.NewCachedShopRepository,
 
 		cache.NewSessionRepository,
+		cache.NewLikeRepository,
 
 		database.NewMysqlDatabase,
 		database.NewRedisDatabase,

@@ -9,13 +9,10 @@ func NewUserRouter(r *gin.Engine, h *UserHandler, auth gin.HandlerFunc) *gin.Eng
 	user := r.Group("/user/")
 
 	user.POST("login", h.Login)
-
-	protected := r.Group("/user/")
-	protected.Use(auth)
-
-	protected.GET("me", h.Me)
-	protected.POST("logout", h.Logout)
-	protected.GET("info/:id", h.Info)
+	user.Use(auth)
+	user.GET("me", h.Me)
+	user.POST("logout", h.Logout)
+	user.GET("info/:id", h.Info)
 
 	return r
 }
@@ -25,9 +22,11 @@ func NewBlogRouter(r *gin.Engine, h *BlogHandler, auth gin.HandlerFunc) *gin.Eng
 	blog := r.Group("/blog/")
 	blog.Use(auth)
 	blog.POST("", h.SaveBlog)
-	blog.GET("like/:id", h.LikeBlog)
+	blog.PUT("like/:id", h.LikeBlog)
+	blog.GET("likes/:id", h.QueryTopLikes)
 	blog.GET("of/me", h.QueryMyBlog)
 	blog.GET("hot", h.QueryHotBlog)
+	blog.GET(":id", h.QueryBlogById)
 
 	return r
 
@@ -37,8 +36,10 @@ func NewShopRouter(r *gin.Engine, h *ShopHandler, auth gin.HandlerFunc) *gin.Eng
 
 	shop := r.Group("/shop/")
 	shop.Use(auth)
+	shop.GET("of/name", h.QueryShopByName)
 	shop.GET(":id", h.QueryShopById)
 	shop.GET("of/type", h.QueryShopByType)
+
 	return r
 
 }

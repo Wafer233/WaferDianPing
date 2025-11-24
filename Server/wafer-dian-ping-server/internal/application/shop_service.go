@@ -30,10 +30,29 @@ func (svc *ShopService) FindById(ctx context.Context, id int64) (ShopVO, error) 
 	return vo, nil
 }
 
-func (svc *ShopService) FindPage(ctx context.Context, typeId int64,
+func (svc *ShopService) FindTypePage(ctx context.Context, typeId int64,
 	page int, size int) ([]*ShopVO, error) {
 
-	shops, err := svc.repo.FindPage(ctx, typeId, page, size)
+	shops, err := svc.repo.FindTypePage(ctx, typeId, page, size)
+	if err != nil || len(shops) == 0 {
+		return nil, err
+	}
+	vos := make([]*ShopVO, len(shops))
+
+	_ = copier.Copy(&vos, &shops)
+
+	for i, _ := range vos {
+		vos[i].UpdateTime = times.FormatTime(shops[i].UpdateTime, "2006-01-02 15:04:05")
+		vos[i].CreateTime = times.FormatTime(shops[i].CreateTime, "2006-01-02 15:04:05")
+	}
+	return vos, nil
+
+}
+
+func (svc *ShopService) FindNamePage(ctx context.Context, name string,
+	page int, size int) ([]*ShopVO, error) {
+
+	shops, err := svc.repo.FindNamePage(ctx, name, page, size)
 	if err != nil || len(shops) == 0 {
 		return nil, err
 	}

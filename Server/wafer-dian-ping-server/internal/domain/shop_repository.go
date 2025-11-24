@@ -4,5 +4,6 @@ import "context"
 
 type ShopRepository interface {
 	FindById(context.Context, int64) (*Shop, error)
-	FindPage(context.Context, int64, int, int) ([]*Shop, error)
+	FindTypePage(context.Context, int64, int, int) ([]*Shop, error)
+	FindNamePage(context.Context, string, int, int) ([]*Shop, error)
 }

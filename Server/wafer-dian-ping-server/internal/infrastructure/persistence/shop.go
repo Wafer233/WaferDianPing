@@ -22,12 +22,28 @@ func (repo *DefaultShopRepository) FindById(ctx context.Context, id int64) (*dom
 	return &shop, nil
 }
 
-func (repo DefaultShopRepository) FindPage(ctx context.Context, typeId int64, page int, pageSize int) ([]*domain.Shop, error) {
+func (repo DefaultShopRepository) FindTypePage(ctx context.Context, typeId int64, page int, pageSize int) ([]*domain.Shop, error) {
 
 	offset := (page - 1) * pageSize
 	shops := make([]*domain.Shop, 0)
 	err := repo.db.WithContext(ctx).Model(&domain.Shop{}).
 		Where("type_id = ?", typeId).
+		Limit(pageSize).
+		Offset(offset).
+		Find(&shops).Error
+	if err != nil {
+		return nil, err
+	}
+	return shops, nil
+
+}
+
+func (repo DefaultShopRepository) FindNamePage(ctx context.Context, name string, page int, pageSize int) ([]*domain.Shop, error) {
+
+	offset := (page - 1) * pageSize
+	shops := make([]*domain.Shop, 0)
+	err := repo.db.WithContext(ctx).Model(&domain.Shop{}).
+		Where("name = ?", name).
 		Limit(pageSize).
 		Offset(offset).
 		Find(&shops).Error

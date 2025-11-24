@@ -18,6 +18,10 @@ type CachedShopRepository struct {
 	cache *redis.Client
 }
 
+func (repo *CachedShopRepository) FindNamePage(ctx context.Context, name string, i int, i2 int) ([]*domain.Shop, error) {
+	return repo.repo.FindNamePage(ctx, name, i, i2)
+}
+
 func (repo *CachedShopRepository) FindById(ctx context.Context, id int64) (*domain.Shop, error) {
 
 	idStr := strconv.FormatInt(id, 10)
@@ -53,7 +57,7 @@ func (repo *CachedShopRepository) FindById(ctx context.Context, id int64) (*doma
 	return shop, nil
 }
 
-func (repo *CachedShopRepository) FindPage(ctx context.Context,
+func (repo *CachedShopRepository) FindTypePage(ctx context.Context,
 	typeId int64, page int, pageSize int) ([]*domain.Shop, error) {
 
 	// 拼接 key
@@ -130,7 +134,7 @@ func (repo *CachedShopRepository) FindPage(ctx context.Context,
 	}
 
 	// =============== 5. 得到锁 → 查询数据库 ===============
-	shops, err := repo.repo.FindPage(ctx, typeId, page, pageSize)
+	shops, err := repo.repo.FindTypePage(ctx, typeId, page, pageSize)
 	if err != nil {
 		return nil, err
 	}

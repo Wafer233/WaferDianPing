@@ -45,7 +45,7 @@ func (h *UserHandler) Login(c *gin.Context) {
 	}
 
 	//设置cookie
-	c.SetCookie("session_id", sessionId, 3600, "/", "localhost", false, false)
+	c.SetCookie("session_id", sessionId, 3600, "", "", false, false)
 
 	c.JSON(http.StatusOK, result.Ok())
 }
@@ -78,6 +78,7 @@ func (h *UserHandler) Me(c *gin.Context) {
 	defer cancel()
 
 	vo, err := h.svc.FindUser(ctx, curId.(int64))
+
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, result.Fail(err.Error()))
 		return
