@@ -35,7 +35,9 @@ func (repo *DefaultBlogRepository) DislikeById(ctx context.Context, id int64) er
 func (repo *DefaultBlogRepository) FindById(ctx context.Context, id int64) (*domain.Blog, error) {
 
 	blog := domain.Blog{}
-	err := repo.db.WithContext(ctx).Model(&domain.Blog{}).First(&blog).Error
+	err := repo.db.WithContext(ctx).Model(&domain.Blog{}).
+		Where("id = ?", id).
+		First(&blog).Error
 
 	if err != nil {
 		return nil, err

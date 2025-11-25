@@ -11,6 +11,23 @@ type DefaultUserRepository struct {
 	db *gorm.DB
 }
 
+func (repo *DefaultUserRepository) FindUserByIds(ctx context.Context, ids []int64) (map[int64]*domain.User, error) {
+
+	users := make([]*domain.User, 0)
+
+	err := repo.db.WithContext(ctx).
+		Model(domain.User{}).Where("id in (?)", ids).Find(&users).Error
+	if err != nil {
+		return nil, err
+	}
+
+	mapping := make(map[int64]*domain.User)
+	for _, user := range users {
+		mapping[user.Id] = user
+	}
+	return mapping, nil
+}
+
 func (repo *DefaultUserRepository) FindInfoByUserId(ctx context.Context, userId int64) (*domain.UserInfo, error) {
 
 	entity := &domain.UserInfo{}

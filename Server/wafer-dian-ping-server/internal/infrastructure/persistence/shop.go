@@ -54,6 +54,23 @@ func (repo DefaultShopRepository) FindNamePage(ctx context.Context, name string,
 
 }
 
+func (repo *DefaultShopRepository) FindByIds(ctx context.Context,
+	ids []int64) (map[int64]*domain.Shop, error) {
+	shops := make([]*domain.Shop, 0)
+
+	err := repo.db.WithContext(ctx).Model(&domain.Shop{}).
+		Where("id in (?)", ids).Find(&shops).Error
+	if err != nil {
+		return nil, err
+	}
+	mapping := make(map[int64]*domain.Shop)
+	for i, _ := range shops {
+		mapping[shops[i].Id] = shops[i]
+	}
+	return mapping, nil
+
+}
+
 func NewDefaultShopRepository(db *gorm.DB) *DefaultShopRepository {
 	return &DefaultShopRepository{db: db}
 }

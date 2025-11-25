@@ -47,7 +47,8 @@ func (h *UserHandler) Login(c *gin.Context) {
 	//设置cookie
 	c.SetCookie("session_id", sessionId, 3600, "", "", false, false)
 
-	c.JSON(http.StatusOK, result.Ok())
+	//这里必须要返回一些东西，不然他直接给我跳转到登录了，他的前端后来的方案不是sessionid是token
+	c.JSON(http.StatusOK, result.OkData(sessionId))
 }
 
 func (h *UserHandler) Logout(c *gin.Context) {
@@ -104,6 +105,29 @@ func (h *UserHandler) Info(c *gin.Context) {
 	ctx, cancel := context.WithTimeout(context.Background(), time.Second)
 	defer cancel()
 	vo, err := h.svc.FindUserInfo(ctx, int64(idInt))
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, result.Fail(err.Error()))
+		return
+	}
+	c.JSON(http.StatusOK, result.OkData(vo))
+}
+
+func (h *UserHandler) QueryUserById(c *gin.Context) {
+	id := c.Param("id")
+
+	if id == "" {
+		c.JSON(http.StatusBadRequest, result.Fail("id空"))
+		return
+	}
+
+	idInt, err := strconv.Atoi(id)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, result.Fail(err.Error()))
+		return
+	}
+	ctx, cancel := context.WithTimeout(context.Background(), time.Second)
+	defer cancel()
+	vo, err := h.svc.FindUser(ctx, int64(idInt))
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, result.Fail(err.Error()))
 		return

@@ -52,16 +52,27 @@ func (h *ShopHandler) QueryShopByType(c *gin.Context) {
 		return
 	}
 	current := c.DefaultQuery("current", "1")
+	xstr := c.Query("x")
+	ystr := c.Query("y")
+
+	var x, y float64
+	if xstr != "" {
+		x, _ = strconv.ParseFloat(xstr, 64)
+	}
+	if ystr != "" {
+		y, _ = strconv.ParseFloat(ystr, 64)
+	}
 
 	// 这里是他设置的
 	pageSize := int(5)
 	page, _ := strconv.Atoi(current)
 	typeIdInt, _ := strconv.Atoi(typeId)
 
-	ctx, cancel := context.WithTimeout(context.Background(), time.Second)
+	ctx, cancel := context.WithTimeout(context.Background(), 10000*time.Second)
 	defer cancel()
 
-	vos, err := h.svc.FindTypePage(ctx, int64(typeIdInt), page, pageSize)
+	vos, err := h.svc.FindTypePage(ctx, int64(typeIdInt), page,
+		pageSize, x, y)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, result.Fail(err.Error()))
 		return
@@ -71,10 +82,6 @@ func (h *ShopHandler) QueryShopByType(c *gin.Context) {
 
 func (h *ShopHandler) QueryShopByName(c *gin.Context) {
 	name := c.Query("name")
-	if name == "" {
-		c.JSON(http.StatusBadRequest, result.Fail("获取id失败"))
-		return
-	}
 	current := c.DefaultQuery("current", "1")
 
 	// 这里是他设置的

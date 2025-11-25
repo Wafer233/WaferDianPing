@@ -43,8 +43,13 @@ func Init() (*gin.Engine, error) {
 	handlerFunc := middleware.AuthMiddleware(sessionService)
 	defaultShopRepository := persistence.NewDefaultShopRepository(db)
 	shopRepository := persistence.NewCachedShopRepository(defaultShopRepository, client)
-	shopService := application.NewShopService(shopRepository)
+	geoCache := cache.NewGeoCache(client)
+	shopService := application.NewShopService(shopRepository, geoCache)
 	shopHandler := http.NewShopHandler(shopService)
-	engine := NewRouter(shopTypeHandler, userHandler, blogHandler, handlerFunc, shopHandler)
+	followRepository := persistence.NewDefaultFollowRepository(db)
+	followCache := cache.NewFollowCache(client)
+	followService := application.NewFollowService(followRepository, followCache, userService)
+	followHandler := http.NewFollowHandler(followService)
+	engine := NewRouter(shopTypeHandler, userHandler, blogHandler, handlerFunc, shopHandler, followHandler)
 	return engine, nil
 }

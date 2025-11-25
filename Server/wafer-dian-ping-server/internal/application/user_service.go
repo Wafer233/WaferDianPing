@@ -77,3 +77,16 @@ func (svc *UserService) LogoutService(ctx context.Context, sessionId string) err
 
 	return svc.sessionSvc.Del(ctx, sessionId)
 }
+
+func (svc *UserService) FindUserByIds(ctx context.Context, ids []int64) (map[int64]*UserVO, error) {
+
+	mapping, err := svc.repo.FindUserByIds(ctx, ids)
+	if err != nil {
+		return nil, err
+	}
+
+	mappingVO := make(map[int64]*UserVO)
+
+	_ = copier.Copy(&mappingVO, &mapping)
+	return mappingVO, nil
+}

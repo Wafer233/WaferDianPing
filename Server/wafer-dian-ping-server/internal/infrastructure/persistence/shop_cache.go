@@ -18,6 +18,10 @@ type CachedShopRepository struct {
 	cache *redis.Client
 }
 
+func (repo *CachedShopRepository) FindByIds(ctx context.Context, ids []int64) (map[int64]*domain.Shop, error) {
+	return repo.repo.FindByIds(ctx, ids)
+}
+
 func (repo *CachedShopRepository) FindNamePage(ctx context.Context, name string, i int, i2 int) ([]*domain.Shop, error) {
 	return repo.repo.FindNamePage(ctx, name, i, i2)
 }

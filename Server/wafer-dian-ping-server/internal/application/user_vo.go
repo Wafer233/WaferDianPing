@@ -2,7 +2,7 @@ package application
 
 type UserVO struct {
 	Id       int64  `json:"id"`
-	NickName string `json:"nickname"`
+	NickName string `json:"nickName"`
 	Icon     string `json:"icon"`
 }
 

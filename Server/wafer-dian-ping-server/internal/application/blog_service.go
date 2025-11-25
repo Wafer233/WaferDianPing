@@ -79,14 +79,30 @@ func (svc *BlogService) FindPageHot(ctx context.Context, page int, pageSize int)
 
 	vos := make([]BlogVO, len(blogs))
 	_ = copier.Copy(&vos, &blogs)
+
+	// 查user
+	ids := make([]int64, len(blogs))
+	for i, _ := range vos {
+		ids[i] = blogs[i].UserId
+	}
+
+	mapping, err := svc.userSvc.FindUserByIds(ctx, ids)
+	if err != nil {
+		return nil, err
+	}
+
 	for i, _ := range vos {
 		vos[i].CreateTime = times.FormatTime(blogs[i].CreateTime, "2006-01-02 15:04:05")
 		vos[i].UpdateTime = times.FormatTime(blogs[i].UpdateTime, "2006-01-02 15:04:05")
+		vos[i].Name = mapping[vos[i].UserId].NickName
+		vos[i].Icon = mapping[vos[i].UserId].Icon
 	}
+
 	return vos, nil
 }
 
-func (svc *BlogService) FindById(ctx context.Context, id int64) (BlogVO, error) {
+func (svc *BlogService) FindById(ctx context.Context, id int64,
+	curId int64) (BlogVO, error) {
 
 	blog, err := svc.repo.FindById(ctx, id)
 	if err != nil || blog == nil {
@@ -94,6 +110,22 @@ func (svc *BlogService) FindById(ctx context.Context, id int64) (BlogVO, error) 
 	}
 	vo := BlogVO{}
 	_ = copier.Copy(&vo, &blog)
+
+	vo.UpdateTime = times.FormatTime(blog.UpdateTime, "2006-01-02 15:04:05")
+	vo.CreateTime = times.FormatTime(blog.CreateTime, "2006-01-02 15:04:05")
+
+	user, err := svc.userSvc.FindUser(ctx, blog.UserId)
+	if err != nil {
+		return BlogVO{}, err
+	}
+	vo.Name = user.NickName
+	vo.Icon = user.Icon
+
+	_, err = svc.likeSvc.ZScore(ctx, curId, id)
+	if err == nil {
+		vo.IsLike = true
+	}
+
 	return vo, nil
 }
 

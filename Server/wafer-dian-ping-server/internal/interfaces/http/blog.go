@@ -112,10 +112,16 @@ func (h *BlogHandler) QueryBlogById(c *gin.Context) {
 	id := c.Param("id")
 	idInt, _ := strconv.ParseInt(id, 10, 64)
 
+	curId, exist := c.Get("id")
+	if !exist {
+		c.JSON(http.StatusUnauthorized, result.Fail("未授权"))
+		return
+	}
+
 	ctx, cancel := context.WithTimeout(context.Background(), 1*time.Second)
 	defer cancel()
 
-	vo, err := h.svc.FindById(ctx, idInt)
+	vo, err := h.svc.FindById(ctx, idInt, curId.(int64))
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, result.Fail(err.Error()))
 		return
