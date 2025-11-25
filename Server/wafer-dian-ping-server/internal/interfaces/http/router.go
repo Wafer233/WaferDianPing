@@ -80,3 +80,12 @@ func NewVoucherRouter(r *gin.Engine, h *VoucherHandler, auth gin.HandlerFunc) *g
 
 	return r
 }
+
+func NewVoucherOrderRouter(r *gin.Engine, h *VoucherOrderHandler,
+	auth gin.HandlerFunc) *gin.Engine {
+
+	order := r.Group("/voucher-order/")
+	order.Use(auth)
+	order.POST("seckill/:id", h.SeckillVoucher)
+	return r
+}

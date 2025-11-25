@@ -23,6 +23,7 @@ func Init() (*gin.Engine, error) {
 		http.NewShopHandler,
 		http.NewFollowHandler,
 		http.NewVoucherHandler,
+		http.NewVoucherOrderHandler,
 
 		middleware.AuthMiddleware,
 
@@ -34,6 +35,7 @@ func Init() (*gin.Engine, error) {
 		application.NewLikeService,
 		application.NewFollowService,
 		application.NewVoucherService,
+		application.NewVoucherOrderService,
 
 		persistence.NewDefaultShopTypeRepository,
 		persistence.NewDefaultUserRepository,
@@ -42,12 +44,14 @@ func Init() (*gin.Engine, error) {
 		persistence.NewCachedShopRepository,
 		persistence.NewDefaultFollowRepository,
 		persistence.NewDefaultVoucherRepository,
+		persistence.NewDefaultVoucherOrderRepository,
 
 		cache.NewSessionRepository,
 		cache.NewLikeRepository,
 		cache.NewFollowCache,
 		cache.NewGeoCache,
 		cache.NewVoucherCache,
+		cache.NewVoucherOrderCache,
 
 		database.NewMysqlDatabase,
 		database.NewRedisDatabase,

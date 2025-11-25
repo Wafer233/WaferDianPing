@@ -54,6 +54,10 @@ func Init() (*gin.Engine, error) {
 	voucherCache := cache.NewVoucherCache(client)
 	voucherService := application.NewVoucherService(voucherRepository, voucherCache)
 	voucherHandler := http.NewVoucherHandler(voucherService)
-	engine := NewRouter(shopTypeHandler, userHandler, blogHandler, handlerFunc, shopHandler, followHandler, voucherHandler)
+	voucherOrderRepository := persistence.NewDefaultVoucherOrderRepository(db)
+	voucherOrderCache := cache.NewVoucherOrderCache(client)
+	voucherOrderService := application.NewVoucherOrderService(voucherOrderRepository, voucherService, voucherOrderCache)
+	voucherOrderHandler := http.NewVoucherOrderHandler(voucherOrderService)
+	engine := NewRouter(shopTypeHandler, userHandler, blogHandler, handlerFunc, shopHandler, followHandler, voucherHandler, voucherOrderHandler)
 	return engine, nil
 }

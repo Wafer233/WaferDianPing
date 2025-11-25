@@ -20,9 +20,8 @@ func (cache *VoucherCache) Set(ctx context.Context,
 	voucherId int64, stock int) error {
 
 	vouId := strconv.FormatInt(voucherId, 10)
-	key := "seckill:" + vouId
-	val := strconv.Itoa(stock)
+	key := "seckill:stock:" + vouId
 	ttl := 1 * time.Hour
-	err := cache.rdb.Set(ctx, key, val, ttl).Err()
+	err := cache.rdb.Set(ctx, key, stock, ttl).Err()
 	return err
 }

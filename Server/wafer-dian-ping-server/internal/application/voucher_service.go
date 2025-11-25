@@ -123,3 +123,28 @@ func (svc *VoucherService) FindVoucher(ctx context.Context,
 
 	return vos, nil
 }
+
+func (svc *VoucherService) FindSecKillById(ctx context.Context, voucherId int64) (VoucherVO, error) {
+
+	vou, err := svc.repo.FindSecKillById(ctx, voucherId)
+	if err != nil || vou == nil {
+		return VoucherVO{}, err
+	}
+
+	layout := "2006-01-02 15:04:05"
+	begin := times.FormatTime(vou.BeginTime, layout)
+	end := times.FormatTime(vou.EndTime, layout)
+
+	vo := VoucherVO{
+		Id:        vou.VoucherId,
+		Stock:     vou.Stock,
+		BeginTime: begin,
+		EndTime:   end,
+	}
+	return vo, nil
+}
+
+func (svc *VoucherService) DecrStock(ctx context.Context,
+	voucherId int64, stock int) (bool, error) {
+	return svc.repo.DecrStock(ctx, voucherId, stock)
+}
