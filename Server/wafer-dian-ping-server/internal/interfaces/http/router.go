@@ -70,3 +70,13 @@ func NewFollowRouter(r *gin.Engine, h *FollowHandler, auth gin.HandlerFunc) *gin
 	follow.PUT(":id/:isFollow", h.Follow)
 	return r
 }
+
+func NewVoucherRouter(r *gin.Engine, h *VoucherHandler, auth gin.HandlerFunc) *gin.Engine {
+
+	voucher := r.Group("/voucher/")
+	voucher.POST("seckill", h.AddSeckillVoucher)
+	voucher.POST("", h.AddVoucher)
+	voucher.GET("/list/:shopId", h.QueryVoucherOfShop)
+
+	return r
+}

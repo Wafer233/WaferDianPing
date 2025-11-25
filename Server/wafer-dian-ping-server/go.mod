@@ -3,6 +3,7 @@ module github.com/Wafer233/WaferDianPing/wafer-dian-ping-server
 go 1.24
 
 require (
+	github.com/bwmarrin/snowflake v0.3.0
 	github.com/gin-gonic/gin v1.11.0
 	github.com/google/uuid v1.6.0
 	github.com/google/wire v0.7.0

@@ -12,6 +12,7 @@ func NewRouter(
 	auth gin.HandlerFunc,
 	shops *http.ShopHandler,
 	foll *http.FollowHandler,
+	voucher *http.VoucherHandler,
 ) *gin.Engine {
 
 	r := gin.Default()
@@ -21,6 +22,7 @@ func NewRouter(
 	r = http.NewShopRouter(r, shops, auth)
 	r = http.NewShopTypeRouter(r, shty)
 	r = http.NewFollowRouter(r, foll, auth)
+	r = http.NewVoucherRouter(r, voucher, auth)
 	return r
 
 }

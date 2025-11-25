@@ -50,6 +50,10 @@ func Init() (*gin.Engine, error) {
 	followCache := cache.NewFollowCache(client)
 	followService := application.NewFollowService(followRepository, followCache, userService)
 	followHandler := http.NewFollowHandler(followService)
-	engine := NewRouter(shopTypeHandler, userHandler, blogHandler, handlerFunc, shopHandler, followHandler)
+	voucherRepository := persistence.NewDefaultVoucherRepository(db)
+	voucherCache := cache.NewVoucherCache(client)
+	voucherService := application.NewVoucherService(voucherRepository, voucherCache)
+	voucherHandler := http.NewVoucherHandler(voucherService)
+	engine := NewRouter(shopTypeHandler, userHandler, blogHandler, handlerFunc, shopHandler, followHandler, voucherHandler)
 	return engine, nil
 }
